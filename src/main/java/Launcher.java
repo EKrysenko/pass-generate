@@ -1,10 +1,9 @@
-import lombok.extern.slf4j.Slf4j;
+import static frames.MainFrame.start;
 
-@Slf4j
 public class Launcher {
 
     public static void main(String[] args) {
-        MainFrame.start(args);
+        start(args);
     }
 
 

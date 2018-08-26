@@ -1,3 +1,5 @@
+package frames;
+
 import generators.SimpleRandomGenerator;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -10,28 +12,32 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MainFrame extends Application {
 
-    public static void start(String... args){
-        launch(args);
+    public static void start(String... args) {
+        try {
+            launch(args);
+        } catch (Exception e) {
+            log.debug(e.toString());
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void start(Stage primaryStage) {
 
-        final ChoiceBox<String> cb = new ChoiceBox<>(
-                FXCollections.observableArrayList("5", "10", "12", "15"));
-
-        cb.getSelectionModel().selectedIndexProperty()
-                .addListener((ov, value, new_value) -> {
-
-                });
-
-        Button btn = new Button();
-        btn.setText("Create new password");
-
         SimpleRandomGenerator generator = new SimpleRandomGenerator();
+
+        final ChoiceBox<Integer> choiceBox = new ChoiceBox<>(
+                FXCollections.observableArrayList(6, 8, 10, 15, 20));
+
+        choiceBox.setOnAction(event -> generator.setPassLength(choiceBox.getValue()));
+
+        Button button = new Button();
+        button.setText("Create new password");
 
 
 
@@ -44,17 +50,17 @@ public class MainFrame extends Application {
         primaryStage.show();
 
         HBox hb = new HBox();
-        hb.getChildren().addAll(cb, new Label("Set password length"));
-        hb.setSpacing(30);
+        hb.getChildren().addAll(choiceBox, new Label("Set password length"));
+        hb.setSpacing(10);
         hb.setAlignment(Pos.TOP_LEFT);
         hb.setPadding(new Insets(10, 0, 0, 10));
 
-        btn.setOnAction(event -> {
-            String pass = generator.generate(10, true, true);
+        button.setOnAction(event -> {
+            String pass = generator.generate(true, true);
             System.out.println(pass);
         });
 
         root.getChildren().add(hb);
-        root.getChildren().add(btn);
+        root.getChildren().add(button);
     }
 }

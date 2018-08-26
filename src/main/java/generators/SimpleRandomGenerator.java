@@ -1,14 +1,17 @@
 package generators;
 
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
 import static org.apache.commons.lang3.RandomStringUtils.random;
 
-@NoArgsConstructor
+@Data
 public class SimpleRandomGenerator implements PassGenerator {
 
+    private int passLength;
+    private String password;
+
     @Override
-    public String generate(int length, boolean letters, boolean numbers) {
-        return random(length, letters, numbers);
+    public String generate(boolean letters, boolean numbers) {
+        return random(passLength, letters, numbers);
     }
 }

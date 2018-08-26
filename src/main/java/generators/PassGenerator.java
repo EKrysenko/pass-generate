@@ -2,5 +2,5 @@ package generators;
 
 public interface PassGenerator {
 
-    String generate(int length, boolean letters, boolean numbers);
+    String generate(boolean letters, boolean numbers);
 }
