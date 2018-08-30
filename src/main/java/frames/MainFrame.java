@@ -9,6 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -36,31 +39,40 @@ public class MainFrame extends Application {
 
         choiceBox.setOnAction(event -> generator.setPassLength(choiceBox.getValue()));
 
-        Button button = new Button();
-        button.setText("Create new password");
-
-
-
         StackPane root = new StackPane();
-
         Scene scene = new Scene(root, 300, 250);
+
+        Button button = new Button();
+        HBox hBox = new HBox();
+        TextArea textArea = new TextArea();
+        textArea.setVisible(false);
+        StackPane.setMargin(textArea, new Insets(50.0, 50.0, 180.0, 50.0));
+        StackPane.setMargin(button, new Insets(150.0, 50.0, 10.0, 50.0));
+
+
+        button.setText("Create new password");
+        button.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> button.setEffect(new DropShadow()));
+        button.addEventHandler(MouseEvent.MOUSE_EXITED, e -> button.setEffect(null));
 
         primaryStage.setTitle("Password generator");
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        HBox hb = new HBox();
-        hb.getChildren().addAll(choiceBox, new Label("Set password length"));
-        hb.setSpacing(10);
-        hb.setAlignment(Pos.TOP_LEFT);
-        hb.setPadding(new Insets(10, 0, 0, 10));
+        hBox.getChildren().addAll(choiceBox, new Label("Set password length"));
+        hBox.setSpacing(10);
+        hBox.setAlignment(Pos.TOP_LEFT);
+        hBox.setPadding(new Insets(10, 0, 0, 10));
 
         button.setOnAction(event -> {
-            String pass = generator.generate(true, true);
-            System.out.println(pass);
+            textArea.setVisible(true);
+            if (generator.getPassLength() != 0) {
+                String pass = generator.generate(true, true);
+                textArea.setText(pass);
+            } else {
+                textArea.setText("Please set pass length");
+            }
         });
 
-        root.getChildren().add(hb);
-        root.getChildren().add(button);
+        root.getChildren().addAll(hBox, button, textArea);
     }
 }
