@@ -9,9 +9,10 @@ public class SimpleRandomGenerator implements PassGenerator {
 
     private int passLength;
     private String password;
+    private boolean numbers;
 
     @Override
-    public String generate(boolean letters, boolean numbers) {
+    public String generate(boolean letters) {
         return random(passLength, letters, numbers);
     }
 }
