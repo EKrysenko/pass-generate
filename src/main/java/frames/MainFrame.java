@@ -12,7 +12,6 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
@@ -106,9 +105,6 @@ public class MainFrame extends Application {
 
     private CheckBox createCheckBox() {
         CheckBox checkBox = new CheckBox("Use digits");
-        final Tooltip tooltip = new Tooltip("$ tooltip");
-        tooltip.setFont(new Font("Arial", 16));
-        checkBox.setTooltip(tooltip);
         checkBox.setIndeterminate(false);
         return checkBox;
     }
