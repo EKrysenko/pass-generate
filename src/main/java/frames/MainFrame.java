@@ -122,10 +122,10 @@ public class MainFrame extends Application {
 
     private void generatePassByButtonClick(SimpleRandomGenerator generator, TextArea textArea) {
         textArea.setVisible(true);
-        copyToClipboardButton.setVisible(true);
         if (generator.getPassLength() != 0) {
             String pass = generator.generate(true);
             textArea.setText(pass);
+            copyToClipboardButton.setVisible(true);
         } else {
             textArea.setText("Please set pass length");
         }
