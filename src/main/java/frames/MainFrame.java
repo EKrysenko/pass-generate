@@ -7,6 +7,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -18,17 +20,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import static javafx.collections.FXCollections.observableArrayList;
-import static javafx.geometry.Pos.*;
+import static javafx.geometry.Pos.TOP_LEFT;
 
 @Slf4j
 public class MainFrame extends Application {
 
     private CheckBox checkBox;
     private SimpleRandomGenerator generator = new SimpleRandomGenerator();
-    private ChoiceBox<Integer> choiceBox;
-    private Button button;
+    private ChoiceBox choiceBox;
+    private Button generatePassButton;
+    private Button copyToClipboardButton;
     private List<Integer> passLengthOptions = Arrays.asList(6, 8, 10, 12, 16, 20);
     private TextArea textArea;
+    private StackPane stackPane;
 
 
     public static void start(String... args) {
@@ -43,30 +47,42 @@ public class MainFrame extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-
-        createCheckBox();
+        checkBox = createCheckBox();
         checkBox.setOnAction(event -> useNumbers());
 
-        createChoiceBox((Integer[])passLengthOptions.toArray());
-        choiceBox.setOnAction(event -> generator.setPassLength(choiceBox.getValue()));
+        choiceBox = createChoiceBox((Integer[])passLengthOptions.toArray());
+        choiceBox.setOnAction(event -> generator.setPassLength((Integer) choiceBox.getValue()));
 
-        StackPane root = new StackPane();
-        Scene scene = new Scene(root, 400, 250);
+        textArea = createTextArea();
 
-        createTextArea();
+        generatePassButton = createButton("Create new password", 150.0, 10.0, 50.0, 50.0, true);
+        generatePassButton.setOnAction(event -> generatePassByButtonClick(generator, textArea));
 
-        createButton("Create new password");
-        button.setOnAction(event -> generatePassByButtonClick(generator, textArea));
-
-        primaryStage.setTitle("Password generator");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        copyToClipboardButton = createButton("Copy to \nclipboard", 50.0, 150.0, 295.0, 15.0, false);
+        copyToClipboardButton.setOnAction(event -> copyToClipboard(textArea));
 
         HBox hBox = new HBox();
         configureHBox(hBox, TOP_LEFT);
         hBox.getChildren().addAll(choiceBox, new Label("Set password length"), checkBox);
 
-        root.getChildren().addAll(hBox, button, textArea);
+        stackPane = createStackPane(primaryStage, "Password generator", 400, 250);
+        stackPane.getChildren().addAll(hBox, generatePassButton, textArea, copyToClipboardButton);
+    }
+
+    private void copyToClipboard(TextArea textArea) {
+        final Clipboard clipboard = Clipboard.getSystemClipboard();
+        final ClipboardContent content = new ClipboardContent();
+        content.putString(textArea.getText());
+        clipboard.setContent(content);
+    }
+
+    private StackPane createStackPane(Stage primaryStage, String title, int width, int height) {
+        stackPane = new StackPane();
+        Scene scene = new Scene(stackPane, width, height);
+        primaryStage.setTitle(title);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        return stackPane;
     }
 
     private void configureHBox(HBox hBox, Pos alignment) {
@@ -75,22 +91,25 @@ public class MainFrame extends Application {
         hBox.setPadding(new Insets(10, 0, 0, 10));
     }
 
-    private void createTextArea() {
+    private TextArea createTextArea() {
         textArea = new TextArea();
         textArea.setVisible(false);
-        StackPane.setMargin(textArea, new Insets(50.0, 50.0, 150.0, 50.0));
+        StackPane.setMargin(textArea, new Insets(50.0, 100.0, 150.0, 25.0));
+        return textArea;
     }
 
-    private void createChoiceBox(Integer[] passLengthOptions) {
+    private ChoiceBox createChoiceBox(Integer[] passLengthOptions) {
         choiceBox = new ChoiceBox<>(observableArrayList(passLengthOptions));
+        return choiceBox;
     }
 
-    private void createCheckBox() {
-        checkBox = new CheckBox("Use digits");
+    private CheckBox createCheckBox() {
+        CheckBox checkBox = new CheckBox("Use digits");
         final Tooltip tooltip = new Tooltip("$ tooltip");
         tooltip.setFont(new Font("Arial", 16));
         checkBox.setTooltip(tooltip);
         checkBox.setIndeterminate(false);
+        return checkBox;
     }
 
     private void useNumbers() {
@@ -103,6 +122,7 @@ public class MainFrame extends Application {
 
     private void generatePassByButtonClick(SimpleRandomGenerator generator, TextArea textArea) {
         textArea.setVisible(true);
+        copyToClipboardButton.setVisible(true);
         if (generator.getPassLength() != 0) {
             String pass = generator.generate(true);
             textArea.setText(pass);
@@ -111,11 +131,13 @@ public class MainFrame extends Application {
         }
     }
 
-    private void createButton(String buttonLabel) {
-        button = new Button();
+    private Button createButton(String buttonLabel, double top, double bottom, double left, double right, boolean visible) {
+        Button button = new Button();
+        button.setVisible(visible);
         button.setText(buttonLabel);
         button.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> button.setEffect(new DropShadow()));
         button.addEventHandler(MouseEvent.MOUSE_EXITED, e -> button.setEffect(null));
-        StackPane.setMargin(button, new Insets(150.0, 50.0, 10.0, 50.0));
+        StackPane.setMargin(button, new Insets(top, right, bottom, left));
+        return button;
     }
 }
