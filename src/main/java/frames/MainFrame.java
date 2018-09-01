@@ -58,7 +58,7 @@ public class MainFrame extends Application {
         generatePassButton = createButton("Create new password", 150.0, 10.0, 50.0, 50.0, true);
         generatePassButton.setOnAction(event -> generatePassByButtonClick(generator, textArea));
 
-        copyToClipboardButton = createButton("Copy to \nclipboard", 50.0, 150.0, 295.0, 15.0, true);
+        copyToClipboardButton = createButton("Copy to \nclipboard", 50.0, 150.0, 295.0, 15.0, false);
         copyToClipboardButton.setOnAction(event -> copyToClipboard(textArea));
 
         HBox hBox = new HBox();
