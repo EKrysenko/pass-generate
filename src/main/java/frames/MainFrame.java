@@ -81,6 +81,7 @@ public class MainFrame extends Application {
         Scene scene = new Scene(stackPane, width, height);
         primaryStage.setTitle(title);
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
         return stackPane;
     }
